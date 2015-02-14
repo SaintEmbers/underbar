@@ -190,51 +190,70 @@
   _.contains = function(collection, target) {
     // TIP: Many iteration problems can be most easily expressed in
     // terms of reduce(). Here's a freebie to demonstrate!
-      var found = false;
-    for(var item in collection){
-      if(collection[item] === target){
-        found = true;
-      }
+    
+    if(Array.isArray(collection)){
+      return _.reduce(collection, function(found, item){
+        if(found){
+          return true;
+        }
+      return item === target;
+      },false); 
     }
+    else{
+      var found = false;
+      for(var item in collection){
+        if(collection[item] === target){
+          found = true;
+        }
+      }
     return found;
+    };
   };
 
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
-       if(iterator === undefined){
-          for(var i = 0; i < collection.length; i++){
-            if(collection[i] === false){
-              return false;
-            }
-          }
-       }
-       else{
-       for(var i = 0; i < collection.length; i++){
-          if (!iterator(collection[i])) {
-            return false;
-          }
-          }
+
+    
+    return _.reduce(collection, function(allFound, item){
+        if(iterator === undefined){
+          return !!item && allFound;
         }
-      return true;
+        else{
+        return  !!iterator(item) && allFound;
+      }
+    },true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
-        for(var i = 0; i < collection.length; i++){
-          if(iterator === undefined){
-            if(collection[i]) {
+        var arr = [];
+         _.every(collection, function(item){
+            if(!!iterator(item)=== true){
+              arr.push(item);
+            };
+            }
+            if(arr.length > 0){
               return true;
             }
-          }
-          else if(iterator(collection[i])) {
-            return true;
-          }
-        }
-        return false;
+          });
+
+
+
+        // for(var i = 0; i < collection.length; i++){
+        //   if(iterator === undefined){
+        //     if(collection[i]) {
+        //       return true;
+        //     }
+        //   }
+        //   else if(iterator(collection[i])) {
+        //     return true;
+        //   }
+        // }
+        // return false;
   };
 
 
